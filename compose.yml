@@ -1,0 +1,25 @@
+services:
+
+  ollama:
+    image: ollama/ollama:0.4.2
+    volumes:
+      - ollama-data:/root/.ollama
+    ports:
+      - 11434:11434
+
+  download-llm-qwen2.5-05b:
+    image: curlimages/curl:8.6.0
+    entrypoint: ["curl", "ollama:11434/api/pull", "-d", "{\"name\": \"qwen2.5:0.5b\"}"]
+    depends_on:
+      ollama:
+        condition: service_started
+
+  download-llm-tinyllama:
+    image: curlimages/curl:8.6.0
+    entrypoint: ["curl", "ollama:11434/api/pull", "-d", "{\"name\": \"tinyllama\"}"]
+    depends_on:
+      ollama:
+        condition: service_started
+
+volumes:
+  ollama-data:
